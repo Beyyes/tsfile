@@ -66,7 +66,7 @@ public class TSFileDescriptor {
 			conf = yaml.loadAs(inputStream, TSFileConfig.class);
 		} catch (Exception e) {
 			LOGGER.error("Loading settings {} failed.", url, e);
-			System.exit(1);
+			//System.exit(1);
 		} finally {
 			if (inputStream != null) {
 				try {
