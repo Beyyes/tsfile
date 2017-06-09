@@ -37,7 +37,7 @@ public class FloatDecoderTest {
   public void setUp() throws Exception {
     floatList = new ArrayList<Float>();
     int hybridCount = 11;
-    int hybridNum = 30;
+    int hybridNum = 1; 
     int hybridStart = 20;
     for (int i = 0; i < hybridNum; i++) {
       for (int j = 0; j < hybridCount; j++) {
@@ -52,7 +52,7 @@ public class FloatDecoderTest {
 
     doubleList = new ArrayList<Double>();
     int hybridCountDouble = 11;
-    int hybridNumDouble = 30;
+    int hybridNumDouble = 1;
     long hybridStartDouble = 20;
 
     for (int i = 0; i < hybridNumDouble; i++) {
