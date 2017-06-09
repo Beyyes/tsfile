@@ -1,1 +1,6 @@
-mvn clean verify
+
+language: java
+
+jdk:
+  - oraclejdk8
+
