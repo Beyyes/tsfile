@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Beyyes/tsfile.svg?branch=master)](https://travis-ci.org/Beyyes/tsfile)
+
 # TsFile Document
 <pre>
 ___________    ___________.__.__          
