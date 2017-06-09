@@ -1,5 +1,6 @@
 #!/bin/sh
 
+
 mvn clean package -Dmaven.test.skip=true
 
 if [ -d "./lib/" ]; then
