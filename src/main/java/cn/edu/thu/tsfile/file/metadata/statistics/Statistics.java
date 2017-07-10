@@ -47,7 +47,7 @@ public abstract class Statistics<T> {
             case INT64:
                 return new LongStatistics();
             case BYTE_ARRAY:
-                return new StringStatistics();
+                return new BinaryStatistics();
             case ENUMS:
             case BOOLEAN:
                 return new NoStatistics();
@@ -128,10 +128,6 @@ public abstract class Statistics<T> {
     }
 
     public void updateStats(Binary value) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void updateStats(String value) {
         throw new UnsupportedOperationException();
     }
 

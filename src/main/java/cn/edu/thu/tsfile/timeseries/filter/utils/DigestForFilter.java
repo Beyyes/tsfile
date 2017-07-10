@@ -3,6 +3,7 @@ package cn.edu.thu.tsfile.timeseries.filter.utils;
 import java.nio.ByteBuffer;
 
 import cn.edu.thu.tsfile.common.exception.filter.UnSupportFilterDataTypeException;
+import cn.edu.thu.tsfile.common.utils.Binary;
 import cn.edu.thu.tsfile.common.utils.BytesUtils;
 import cn.edu.thu.tsfile.file.metadata.enums.TSDataType;
 
@@ -41,7 +42,7 @@ public class DigestForFilter {
             case DOUBLE:
                 return (T) ((Double) BytesUtils.bytesToDouble(min.array()));
             case BYTE_ARRAY:
-                return (T) (BytesUtils.bytesToString(min.array()));
+                return (T) new Binary(BytesUtils.bytesToString(min.array()));
             default:
                 throw new UnSupportFilterDataTypeException("DigestForFilter unsupported datatype : " + type.toString());
         }
@@ -59,7 +60,7 @@ public class DigestForFilter {
             case DOUBLE:
                 return (T) ((Double) BytesUtils.bytesToDouble(max.array()));
             case BYTE_ARRAY:
-                return (T) (BytesUtils.bytesToString(max.array()));
+                return (T) new Binary(BytesUtils.bytesToString(max.array()));
             default:
                 throw new UnSupportFilterDataTypeException("DigestForFilter unsupported datatype : " + type.toString());
         }

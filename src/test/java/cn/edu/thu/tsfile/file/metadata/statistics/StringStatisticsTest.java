@@ -1,6 +1,7 @@
 package cn.edu.thu.tsfile.file.metadata.statistics;
 
 
+import cn.edu.thu.tsfile.common.utils.Binary;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -8,33 +9,33 @@ import static org.junit.Assert.assertEquals;
 public class StringStatisticsTest {
     @Test
     public void testUpdate() {
-        Statistics<String> stringStats = new StringStatistics();
-        stringStats.updateStats("aaa");
-        assertEquals(false, stringStats.isEmpty());
-        stringStats.updateStats("bbb");
-        assertEquals(false, stringStats.isEmpty());
-        assertEquals("bbb", (String) stringStats.getMax());
-        assertEquals("aaa", (String) stringStats.getMin());
+        Statistics<Binary> binaryStats = new BinaryStatistics();
+        binaryStats.updateStats(new Binary("aaa"));
+        assertEquals(false, binaryStats.isEmpty());
+        binaryStats.updateStats(new Binary("bbb"));
+        assertEquals(false, binaryStats.isEmpty());
+        assertEquals("bbb", binaryStats.getMax().getStringValue());
+        assertEquals("aaa", binaryStats.getMin().getStringValue());
     }
 
     @Test
     public void testMerge() {
-        Statistics<String> stringStats1 = new StringStatistics();
-        Statistics<String> stringStats2 = new StringStatistics();
+        Statistics<Binary> stringStats1 = new BinaryStatistics();
+        Statistics<Binary> stringStats2 = new BinaryStatistics();
 
-        stringStats1.updateStats("aaa");
-        stringStats1.updateStats("ccc");
+        stringStats1.updateStats(new Binary("aaa"));
+        stringStats1.updateStats(new Binary("ccc"));
 
-        stringStats2.updateStats("ddd");
+        stringStats2.updateStats(new Binary("ddd"));
 
-        Statistics<String> stringStats3 = new StringStatistics();
+        Statistics<Binary> stringStats3 = new BinaryStatistics();
         stringStats3.mergeStatistics(stringStats1);
         assertEquals(false, stringStats3.isEmpty());
-        assertEquals("ccc", (String) stringStats3.getMax());
-        assertEquals("aaa", (String) stringStats3.getMin());
+        assertEquals("ccc", (String) stringStats3.getMax().getStringValue());
+        assertEquals("aaa", (String) stringStats3.getMin().getStringValue());
 
         stringStats3.mergeStatistics(stringStats2);
-        assertEquals("ddd", (String) stringStats3.getMax());
-        assertEquals("aaa", (String) stringStats3.getMin());
+        assertEquals("ddd", (String) stringStats3.getMax().getStringValue());
+        assertEquals("aaa", (String) stringStats3.getMin().getStringValue());
     }
 }
