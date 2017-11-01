@@ -8,8 +8,8 @@ import cn.edu.tsinghua.tsfile.common.utils.ITsRandomAccessFileReader;
 import cn.edu.tsinghua.tsfile.timeseries.read.query.QueryEngine;
 import cn.edu.tsinghua.tsfile.timeseries.read.support.Field;
 import cn.edu.tsinghua.tsfile.timeseries.read.support.RowRecord;
+import cn.edu.tsinghua.tsfile.timeseries.read.support.TsFileQueryDataSet;
 import cn.edu.tsinghua.tsfile.timeseries.write.exception.WriteProcessException;
-import cn.edu.tsinghua.tsfile.timeseries.read.query.QueryDataSet;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -75,7 +75,7 @@ public class ReadTest {
 
 	@Test
 	public void queryOneMeasurementWithoutFilterTest() throws IOException {
-		QueryDataSet queryDataSet = QueryEngine.query(configOneSeriesWithNoFilter, fileName);
+		TsFileQueryDataSet queryDataSet = QueryEngine.query(configOneSeriesWithNoFilter, fileName);
 
 		int count = 0;
 		while (queryDataSet.hasNextRecord()) {
@@ -93,7 +93,7 @@ public class ReadTest {
 
 	@Test
 	public void queryTwoMeasurementsWithoutFilterTest() throws IOException {
-		QueryDataSet queryDataSet = QueryEngine.query(configTwoSeriesWithNoFilter, fileName);
+		TsFileQueryDataSet queryDataSet = QueryEngine.query(configTwoSeriesWithNoFilter, fileName);
 		int count = 0;
 		while (queryDataSet.hasNextRecord()) {
 			RowRecord r = queryDataSet.getNextRecord();
@@ -106,7 +106,7 @@ public class ReadTest {
 		}
 		assertEquals(count, 750);
 //		// verify d1.s1
-//		DynamicOneColumnData d1s1Data = queryDataSet.mapRet.get("d1.s1");
+//		TsFileDynamicOneColumnData d1s1Data = queryDataSet.mapRet.get("d1.s1");
 //		assertEquals(d1s1Data.length, 500);
 //		assertEquals(d1s1Data.getTime(0), 1480562618010L);
 //		assertEquals(d1s1Data.getInt(0), 101);
@@ -114,7 +114,7 @@ public class ReadTest {
 //		assertEquals(d1s1Data.getInt(d1s1Data.length - 1), 9991);
 //
 //		// verify d2.s2
-//		DynamicOneColumnData d2s2Data = queryDataSet.mapRet.get("d2.s2");
+//		TsFileDynamicOneColumnData d2s2Data = queryDataSet.mapRet.get("d2.s2");
 //		assertEquals(d2s2Data.length, 750);
 //		assertEquals(d2s2Data.getTime(500), 1480562618670L);
 //		assertEquals(d2s2Data.getLong(500), 6702L);
@@ -124,7 +124,7 @@ public class ReadTest {
 
 	@Test
 	public void queryTwoMeasurementsWithSingleFilterTest() throws IOException {
-		QueryDataSet queryDataSet = QueryEngine.query(configWithTwoSeriesTimeValueNoCrossFilter2, fileName);
+		TsFileQueryDataSet queryDataSet = QueryEngine.query(configWithTwoSeriesTimeValueNoCrossFilter2, fileName);
 
 		while (queryDataSet.hasNextRecord()) {
 			RowRecord r = queryDataSet.getNextRecord();
@@ -135,7 +135,7 @@ public class ReadTest {
 
 	@Test
 	public void queryWithTwoSeriesTimeValueFilterCrossTest() throws IOException {
-		QueryDataSet queryDataSet = QueryEngine.query(configWithTwoSeriesTimeValueCrossFilter, fileName);
+		TsFileQueryDataSet queryDataSet = QueryEngine.query(configWithTwoSeriesTimeValueCrossFilter, fileName);
 
 		// time filter & value filter
 		// verify d1.s1, d2.s1
@@ -157,7 +157,7 @@ public class ReadTest {
 
 	@Test
 	public void queryWithCrossSeriesTimeValueFilterTest() throws IOException {
-		QueryDataSet queryDataSet = QueryEngine.query(configWithCrossSeriesTimeValueFilter, fileName);
+		TsFileQueryDataSet queryDataSet = QueryEngine.query(configWithCrossSeriesTimeValueFilter, fileName);
 		// time filter & value filter
 		// verify d1.s1, d2.s1
 		/**
@@ -183,7 +183,7 @@ public class ReadTest {
 		}
 		assertEquals(cnt, 5);
 
-		QueryDataSet queryDataSetOrOpe = QueryEngine.query(configWithCrossSeriesTimeValueFilterOrOpe, fileName);
+		TsFileQueryDataSet queryDataSetOrOpe = QueryEngine.query(configWithCrossSeriesTimeValueFilterOrOpe, fileName);
 		// time filter & value filter
 		// verify d1.s1, d2.s1
 		/**
@@ -214,7 +214,7 @@ public class ReadTest {
 
 	// @Test
 	public void queryBooleanTest() throws IOException {
-		QueryDataSet queryDataSet = QueryEngine.query(booleanConfig, fileName);
+		TsFileQueryDataSet queryDataSet = QueryEngine.query(booleanConfig, fileName);
 		int cnt = 1;
 		while (queryDataSet.hasNextRecord()) {
 			RowRecord r = queryDataSet.getNextRecord();
@@ -234,7 +234,7 @@ public class ReadTest {
 
 	@Test
 	public void queryStringTest() throws IOException {
-		QueryDataSet queryDataSet = QueryEngine.query(lessStringConfig, fileName);
+		TsFileQueryDataSet queryDataSet = QueryEngine.query(lessStringConfig, fileName);
 		int cnt = 0;
 		while (queryDataSet.hasNextRecord()) {
 			RowRecord r = queryDataSet.getNextRecord();
@@ -265,7 +265,7 @@ public class ReadTest {
 
 	@Test
 	public void queryFloatTest() throws IOException {
-		QueryDataSet queryDataSet = QueryEngine.query(floatConfig, fileName);
+		TsFileQueryDataSet queryDataSet = QueryEngine.query(floatConfig, fileName);
 		int cnt = 0;
 		while (queryDataSet.hasNextRecord()) {
 			RowRecord r = queryDataSet.getNextRecord();
@@ -285,7 +285,7 @@ public class ReadTest {
 
 	@Test
 	public void queryDoubleTest() throws IOException {
-		QueryDataSet queryDataSet = QueryEngine.query(doubleConfig, fileName);
+		TsFileQueryDataSet queryDataSet = QueryEngine.query(doubleConfig, fileName);
 		int cnt = 1;
 		while (queryDataSet.hasNextRecord()) {
 			RowRecord r = queryDataSet.getNextRecord();

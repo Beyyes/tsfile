@@ -24,7 +24,7 @@ public class RowRecord {
     public RowRecord(long timestamp, String deltaObjectId, String deltaObjectType) {
         this.timestamp = timestamp;
         this.deltaObjectId = deltaObjectId;
-        this.fields = new ArrayList<Field>();
+        this.fields = new ArrayList<>();
     }
 
     public long getTime() {

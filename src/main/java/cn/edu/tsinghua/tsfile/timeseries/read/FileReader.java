@@ -48,8 +48,8 @@ public class FileReader {
     }
 
     /**
-     * <code>FileReader</code> initialization, construct <code>fileMetaData</code>
-     * <code>rowGroupReaderList</code>, and <code>rowGroupReaderMap</code>.
+     * <code>FileReader</code> initialization, construct <code>FileMetaData</code>
+     * <code>RowGroupReaderList</code>, and <code>RowGroupReaderMap</code>.
      *
      * @throws IOException file read error
      */

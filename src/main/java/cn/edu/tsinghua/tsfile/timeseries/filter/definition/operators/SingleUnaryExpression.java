@@ -3,7 +3,7 @@ package cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators;
 import cn.edu.tsinghua.tsfile.common.exception.FilterInvokeException;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.SingleSeriesFilterExpression;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.filterseries.FilterSeries;
-import cn.edu.tsinghua.tsfile.timeseries.filter.visitorImpl.FilterVisitor;
+import cn.edu.tsinghua.tsfile.timeseries.filter.visitor.impl.FilterVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

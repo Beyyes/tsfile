@@ -13,10 +13,10 @@ import cn.edu.tsinghua.tsfile.format.Digest;
 import cn.edu.tsinghua.tsfile.format.PageHeader;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.SingleSeriesFilterExpression;
 import cn.edu.tsinghua.tsfile.timeseries.filter.utils.DigestForFilter;
-import cn.edu.tsinghua.tsfile.timeseries.filter.visitorImpl.DigestVisitor;
-import cn.edu.tsinghua.tsfile.timeseries.filter.visitorImpl.SingleValueVisitor;
-import cn.edu.tsinghua.tsfile.timeseries.filter.visitorImpl.SingleValueVisitorFactory;
-import cn.edu.tsinghua.tsfile.timeseries.read.query.DynamicOneColumnData;
+import cn.edu.tsinghua.tsfile.timeseries.filter.visitor.impl.DigestVisitor;
+import cn.edu.tsinghua.tsfile.timeseries.filter.visitor.impl.SingleValueVisitor;
+import cn.edu.tsinghua.tsfile.timeseries.filter.visitor.impl.SingleValueVisitorFactory;
+import cn.edu.tsinghua.tsfile.timeseries.read.support.TsFileDynamicOneColumnData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -200,10 +200,10 @@ public class ValueReader {
      * Read the whole column without filters.
      * @param res  result
      * @param fetchSize size of result
-     * @return DynamicOneColumnData
+     * @return TsFileDynamicOneColumnData
      * @throws IOException occurs error in read one column
      */
-    public DynamicOneColumnData readOneColumn(DynamicOneColumnData res, int fetchSize) throws IOException {
+    public TsFileDynamicOneColumnData readOneColumn(TsFileDynamicOneColumnData res, int fetchSize) throws IOException {
         return readOneColumnUseFilter(res, fetchSize, null, null, null);
     }
 
@@ -229,11 +229,11 @@ public class ValueReader {
      * @param timeFilter  filter for time.
      * @param freqFilter  filter for frequency.
      * @param valueFilter filter for value.
-     * @return answer DynamicOneColumnData
+     * @return answer TsFileDynamicOneColumnData
      * @throws IOException occurs error in read one column using filter
      */
-    public DynamicOneColumnData readOneColumnUseFilter(DynamicOneColumnData res, int fetchSize,
-                                                       SingleSeriesFilterExpression timeFilter, SingleSeriesFilterExpression freqFilter, SingleSeriesFilterExpression valueFilter)
+    public TsFileDynamicOneColumnData readOneColumnUseFilter(TsFileDynamicOneColumnData res, int fetchSize,
+                                                             SingleSeriesFilterExpression timeFilter, SingleSeriesFilterExpression freqFilter, SingleSeriesFilterExpression valueFilter)
             throws IOException {
 
         SingleValueVisitor<?> timeVisitor = null;
@@ -246,7 +246,7 @@ public class ValueReader {
         }
 
         if (res == null) {
-            res = new DynamicOneColumnData(getDataType(), true);
+            res = new TsFileDynamicOneColumnData(getDataType(), true);
             res.pageOffset = this.fileOffset;
             res.leftSize = this.totalSize;
         }
@@ -456,11 +456,11 @@ public class ValueReader {
      * function is only for "time" Series
      *
      * @param timestamps array of the time.
-     * @return answer DynamicOneColumnData using given timestamps
+     * @return answer TsFileDynamicOneColumnData using given timestamps
      * @throws IOException occurs error in read
      */
-    public DynamicOneColumnData getValuesForGivenValues(long[] timestamps) throws IOException {
-        DynamicOneColumnData res = new DynamicOneColumnData(dataType, true);
+    public TsFileDynamicOneColumnData getValuesForGivenValues(long[] timestamps) throws IOException {
+        TsFileDynamicOneColumnData res = new TsFileDynamicOneColumnData(dataType, true);
 
         if (timestamps.length == 0) {
             return res;

@@ -11,7 +11,7 @@ import cn.edu.tsinghua.tsfile.timeseries.filter.definition.filterseries.FilterSe
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.And;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.LtEq;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.NotEq;
-import cn.edu.tsinghua.tsfile.timeseries.filter.visitorImpl.DigestVisitor;
+import cn.edu.tsinghua.tsfile.timeseries.filter.visitor.impl.DigestVisitor;
 import org.junit.Test;
 
 import cn.edu.tsinghua.tsfile.file.metadata.enums.TSDataType;

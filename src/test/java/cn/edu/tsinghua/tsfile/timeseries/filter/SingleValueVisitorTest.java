@@ -4,8 +4,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.NotEq;
-import cn.edu.tsinghua.tsfile.timeseries.filter.visitorImpl.SingleValueVisitor;
-import cn.edu.tsinghua.tsfile.timeseries.filter.visitorImpl.SingleValueVisitorFactory;
+import cn.edu.tsinghua.tsfile.timeseries.filter.visitor.impl.SingleValueVisitor;
+import cn.edu.tsinghua.tsfile.timeseries.filter.visitor.impl.SingleValueVisitorFactory;
 import org.junit.Test;
 
 import cn.edu.tsinghua.tsfile.file.metadata.enums.TSDataType;

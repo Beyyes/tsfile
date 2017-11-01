@@ -7,7 +7,7 @@ import cn.edu.tsinghua.tsfile.timeseries.filter.definition.FilterFactory;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.filterseries.FilterSeriesType;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.filterseries.IntFilterSeries;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.SingleUnaryExpression;
-import cn.edu.tsinghua.tsfile.timeseries.filter.visitorImpl.InvertExpressionVisitor;
+import cn.edu.tsinghua.tsfile.timeseries.filter.visitor.impl.InvertExpressionVisitor;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.FilterExpression;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.SingleSeriesFilterExpression;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.Or;

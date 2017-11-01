@@ -7,8 +7,8 @@ import cn.edu.tsinghua.tsfile.timeseries.filter.definition.FilterFactory;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.SingleSeriesFilterExpression;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.filterseries.FilterSeries;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.filterseries.FilterSeriesType;
-import cn.edu.tsinghua.tsfile.timeseries.read.management.SeriesSchema;
-import cn.edu.tsinghua.tsfile.timeseries.read.query.DynamicOneColumnData;
+import cn.edu.tsinghua.tsfile.timeseries.read.support.SeriesSchema;
+import cn.edu.tsinghua.tsfile.timeseries.read.support.TsFileDynamicOneColumnData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,10 +39,10 @@ public class RecordReader {
      * @param fetchSize fetch size
      * @param deltaObjectUID delta object id
      * @param measurementUID  measurement Id
-     * @return the result in means of DynamicOneColumnData
+     * @return the result in means of TsFileDynamicOneColumnData
      * @throws IOException TsFile read error
      */
-    public DynamicOneColumnData getValueInOneColumn(DynamicOneColumnData res, int fetchSize
+    public TsFileDynamicOneColumnData getValueInOneColumn(TsFileDynamicOneColumnData res, int fetchSize
             , String deltaObjectUID, String measurementUID) throws IOException {
         checkSeries(deltaObjectUID, measurementUID);
         List<RowGroupReader> rowGroupReaderList = fileReader.getRowGroupReaderListByDeltaObject(deltaObjectUID);
@@ -54,15 +54,14 @@ public class RecordReader {
             RowGroupReader rowGroupReader = rowGroupReaderList.get(i);
             res = getValueInOneColumn(res, fetchSize, rowGroupReader, measurementUID);
             if (res.valueLength >= fetchSize) {
-                res.hasReadAll = false;
                 break;
             }
         }
         return res;
     }
 
-    private DynamicOneColumnData getValueInOneColumn(DynamicOneColumnData res, int fetchSize,
-                                                     RowGroupReader rowGroupReader, String measurementId) throws IOException {
+    private TsFileDynamicOneColumnData getValueInOneColumn(TsFileDynamicOneColumnData res, int fetchSize,
+                                                           RowGroupReader rowGroupReader, String measurementId) throws IOException {
         return rowGroupReader.getValueReaders().get(measurementId).readOneColumn(res, fetchSize);
     }
 
@@ -75,11 +74,11 @@ public class RecordReader {
      * @param deltaObjectUID delta object id
      * @param measurementId  measurement Id
      * @param idxes index list of the RowGroupReader
-     * @return DynamicOneColumnData
+     * @return TsFileDynamicOneColumnData
      * @throws IOException failed to get value
      */
-    public DynamicOneColumnData getValueInOneColumn(DynamicOneColumnData res, int fetchSize, String deltaObjectUID,
-                                                    String measurementId, ArrayList<Integer> idxes) throws IOException {
+    public TsFileDynamicOneColumnData getValueInOneColumn(TsFileDynamicOneColumnData res, int fetchSize, String deltaObjectUID,
+                                                          String measurementId, ArrayList<Integer> idxes) throws IOException {
         checkSeries(deltaObjectUID, measurementId);
         int rowGroupSkipCount = 0;
 
@@ -100,23 +99,22 @@ public class RecordReader {
                 res.plusRowGroupIndexAndInitPageOffset();
             }
             if (res.valueLength >= fetchSize) {
-                res.hasReadAll = false;
                 break;
             }
         }
         return res;
     }
 
-    public DynamicOneColumnData getValuesUseFilter(DynamicOneColumnData res, int fetchSize
+    public TsFileDynamicOneColumnData getValuesUseFilter(TsFileDynamicOneColumnData res, int fetchSize
             , SingleSeriesFilterExpression valueFilter) throws IOException {
         String deltaObjectUID = valueFilter.getFilterSeries().getDeltaObjectUID();
         String measurementUID = valueFilter.getFilterSeries().getMeasurementUID();
         return getValuesUseFilter(res, fetchSize, deltaObjectUID, measurementUID, null, null, valueFilter);
     }
 
-    public DynamicOneColumnData getValuesUseFilter(DynamicOneColumnData res, int fetchSize, String deltaObjectUID,
-                                                   String measurementId, SingleSeriesFilterExpression timeFilter, SingleSeriesFilterExpression freqFilter,
-                                                   SingleSeriesFilterExpression valueFilter) throws IOException {
+    public TsFileDynamicOneColumnData getValuesUseFilter(TsFileDynamicOneColumnData res, int fetchSize, String deltaObjectUID,
+                                                         String measurementId, SingleSeriesFilterExpression timeFilter, SingleSeriesFilterExpression freqFilter,
+                                                         SingleSeriesFilterExpression valueFilter) throws IOException {
         checkSeries(deltaObjectUID, measurementId);
         int i = 0;
         if (res != null) {
@@ -128,7 +126,6 @@ public class RecordReader {
             RowGroupReader rowGroupReader = rowGroupReaderList.get(i);
             res = getValuesUseFilter(res, fetchSize, rowGroupReader, measurementId, timeFilter, freqFilter, valueFilter);
             if (res.valueLength >= fetchSize) {
-                res.hasReadAll = false;
                 break;
             }
         }
@@ -136,25 +133,25 @@ public class RecordReader {
         return res;
     }
 
-    public DynamicOneColumnData getValuesUseFilter(DynamicOneColumnData res, int fetchSize
+    public TsFileDynamicOneColumnData getValuesUseFilter(TsFileDynamicOneColumnData res, int fetchSize
             , SingleSeriesFilterExpression valueFilter, ArrayList<Integer> idxs) throws IOException {
         String deltaObjectUID = valueFilter.getFilterSeries().getDeltaObjectUID();
         String measurementUID = valueFilter.getFilterSeries().getMeasurementUID();
         return getValuesUseFilter(res, fetchSize, deltaObjectUID, measurementUID, null, null, valueFilter, idxs);
     }
 
-    private DynamicOneColumnData getValuesUseFilter(DynamicOneColumnData res, int fetchSize,
-                                                    RowGroupReader rowGroupReader, String measurementId, SingleSeriesFilterExpression timeFilter,
-                                                    SingleSeriesFilterExpression freqFilter, SingleSeriesFilterExpression valueFilter) throws IOException {
+    private TsFileDynamicOneColumnData getValuesUseFilter(TsFileDynamicOneColumnData res, int fetchSize,
+                                                          RowGroupReader rowGroupReader, String measurementId, SingleSeriesFilterExpression timeFilter,
+                                                          SingleSeriesFilterExpression freqFilter, SingleSeriesFilterExpression valueFilter) throws IOException {
 
         res = rowGroupReader.getValueReaders().get(measurementId).readOneColumnUseFilter(res, fetchSize, timeFilter,
                 freqFilter, valueFilter);
         return res;
     }
 
-    public DynamicOneColumnData getValuesUseFilter(DynamicOneColumnData res, int fetchSize, String deltaObjectUID,
-                                                   String measurementId, SingleSeriesFilterExpression timeFilter, SingleSeriesFilterExpression freqFilter,
-                                                   SingleSeriesFilterExpression valueFilter, ArrayList<Integer> idxs) throws IOException {
+    public TsFileDynamicOneColumnData getValuesUseFilter(TsFileDynamicOneColumnData res, int fetchSize, String deltaObjectUID,
+                                                         String measurementId, SingleSeriesFilterExpression timeFilter, SingleSeriesFilterExpression freqFilter,
+                                                         SingleSeriesFilterExpression valueFilter, ArrayList<Integer> idxs) throws IOException {
         checkSeries(deltaObjectUID, measurementId);
         int rowGroupSkipCount = 0;
 
@@ -176,34 +173,33 @@ public class RecordReader {
                 res.plusRowGroupIndexAndInitPageOffset();
             }
             if (res.valueLength >= fetchSize) {
-                res.hasReadAll = false;
                 break;
             }
         }
         return res;
     }
 
-    public DynamicOneColumnData getValuesUseTimestamps(String deltaObjectUID, String measurementId, long[] timestamps)
+    public TsFileDynamicOneColumnData getValuesUseTimestamps(String deltaObjectUID, String measurementId, long[] timestamps)
             throws IOException {
         checkSeries(deltaObjectUID, measurementId);
-        DynamicOneColumnData res = null;
+        TsFileDynamicOneColumnData res = null;
         List<RowGroupReader> rowGroupReaderList = fileReader.getRowGroupReaderListByDeltaObject(deltaObjectUID);
         for (int i = 0; i < rowGroupReaderList.size(); i++) {
             RowGroupReader rowGroupReader = rowGroupReaderList.get(i);
             if (i == 0) {
                 res = getValuesUseTimestamps(rowGroupReader, measurementId, timestamps);
             } else {
-                DynamicOneColumnData tmpRes = getValuesUseTimestamps(rowGroupReader, measurementId, timestamps);
+                TsFileDynamicOneColumnData tmpRes = getValuesUseTimestamps(rowGroupReader, measurementId, timestamps);
                 res.mergeRecord(tmpRes);
             }
         }
         return res;
     }
 
-    public DynamicOneColumnData getValuesUseTimestamps(String deltaObjectUID, String measurementId, long[] timeRet,
-                                                       ArrayList<Integer> idxs) throws IOException {
+    public TsFileDynamicOneColumnData getValuesUseTimestamps(String deltaObjectUID, String measurementId, long[] timeRet,
+                                                             ArrayList<Integer> idxs) throws IOException {
         checkSeries(deltaObjectUID, measurementId);
-        DynamicOneColumnData res = null;
+        TsFileDynamicOneColumnData res = null;
         List<RowGroupReader> rowGroupReaderList = fileReader.getRowGroupReaderList();
 
         boolean init = false;
@@ -217,14 +213,14 @@ public class RecordReader {
                 res = getValuesUseTimestamps(rowGroupReader, measurementId, timeRet);
                 init = true;
             } else {
-                DynamicOneColumnData tmpRes = getValuesUseTimestamps(rowGroupReader, measurementId, timeRet);
+                TsFileDynamicOneColumnData tmpRes = getValuesUseTimestamps(rowGroupReader, measurementId, timeRet);
                 res.mergeRecord(tmpRes);
             }
         }
         return res;
     }
 
-    private DynamicOneColumnData getValuesUseTimestamps(RowGroupReader rowGroupReader, String measurementId, long[] timeRet)
+    private TsFileDynamicOneColumnData getValuesUseTimestamps(RowGroupReader rowGroupReader, String measurementId, long[] timeRet)
             throws IOException {
         return rowGroupReader.getValueReaders().get(measurementId).getValuesForGivenValues(timeRet);
     }

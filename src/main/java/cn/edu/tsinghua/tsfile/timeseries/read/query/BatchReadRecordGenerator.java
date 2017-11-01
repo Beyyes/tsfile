@@ -1,7 +1,8 @@
 package cn.edu.tsinghua.tsfile.timeseries.read.query;
 
 import cn.edu.tsinghua.tsfile.common.exception.ProcessorException;
-import cn.edu.tsinghua.tsfile.timeseries.read.qp.Path;
+import cn.edu.tsinghua.tsfile.timeseries.read.support.TsFileDynamicOneColumnData;
+import cn.edu.tsinghua.tsfile.timeseries.read.support.Path;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -16,7 +17,7 @@ import java.util.PriorityQueue;
  * @author Jinrui Zhang
  */
 public abstract class BatchReadRecordGenerator {
-    public LinkedHashMap<Path, DynamicOneColumnData> retMap;
+    public LinkedHashMap<Path, TsFileDynamicOneColumnData> retMap;
     private LinkedHashMap<Path, Boolean> hasMoreRet;
     private int noRetCount;
     private HashMap<Long, Integer> timeMap;
@@ -31,7 +32,7 @@ public abstract class BatchReadRecordGenerator {
         this.fetchSize = fetchSize;
         // init for every Series
         for (Path p : paths) {
-            DynamicOneColumnData res = getMoreRecordsForOneColumn(p, null);
+            TsFileDynamicOneColumnData res = getMoreRecordsForOneColumn(p, null);
             retMap.put(p, res);
             if (res.valueLength == 0) {
                 hasMoreRet.put(p, false);
@@ -46,7 +47,7 @@ public abstract class BatchReadRecordGenerator {
     private void initHeap() {
         heap = new PriorityQueue<>();
         for (Path p : retMap.keySet()) {
-            DynamicOneColumnData res = retMap.get(p);
+            TsFileDynamicOneColumnData res = retMap.get(p);
             if (res.curIdx < res.valueLength) {
                 heapPut(res.getTime(res.curIdx));
             }
@@ -66,12 +67,12 @@ public abstract class BatchReadRecordGenerator {
         return t;
     }
 
-    public void clearDataInLastQuery(DynamicOneColumnData res) {
+    public void clearDataInLastQuery(TsFileDynamicOneColumnData res) {
         res.clearData();
     }
 
-    public abstract DynamicOneColumnData getMoreRecordsForOneColumn(Path p
-            , DynamicOneColumnData res) throws ProcessorException, IOException;
+    public abstract TsFileDynamicOneColumnData getMoreRecordsForOneColumn(Path p
+            , TsFileDynamicOneColumnData res) throws ProcessorException, IOException;
 
     /**
      * Calculate the fetchSize number RowRecords.
@@ -89,7 +90,7 @@ public abstract class BatchReadRecordGenerator {
             }
             for (Path path : retMap.keySet()) {
                 if (hasMoreRet.get(path)) {
-                    DynamicOneColumnData res = retMap.get(path);
+                    TsFileDynamicOneColumnData res = retMap.get(path);
                     if (minTime.equals(res.getTime(res.curIdx))) {
                         res.curIdx++;
                         if (res.curIdx == res.valueLength) {

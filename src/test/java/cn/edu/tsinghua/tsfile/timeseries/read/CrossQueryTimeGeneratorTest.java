@@ -8,7 +8,7 @@ import cn.edu.tsinghua.tsfile.timeseries.filter.definition.FilterFactory;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.SingleSeriesFilterExpression;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.filterseries.FilterSeriesType;
 import cn.edu.tsinghua.tsfile.timeseries.read.query.CrossQueryTimeGenerator;
-import cn.edu.tsinghua.tsfile.timeseries.read.query.DynamicOneColumnData;
+import cn.edu.tsinghua.tsfile.timeseries.read.support.TsFileDynamicOneColumnData;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -38,9 +38,9 @@ public class CrossQueryTimeGeneratorTest {
 
         CrossQueryTimeGenerator generator = new CrossQueryTimeGenerator(timeFilter, null, crossFilter3, 1000) {
             @Override
-            public DynamicOneColumnData getDataInNextBatch(DynamicOneColumnData res, int fetchSize, SingleSeriesFilterExpression valueFilter,
-                                                           int valueFilterNumber) throws ProcessorException, IOException {
-                DynamicOneColumnData data = new DynamicOneColumnData(TSDataType.INT32, true);
+            public TsFileDynamicOneColumnData getDataInNextBatch(TsFileDynamicOneColumnData res, int fetchSize, SingleSeriesFilterExpression valueFilter,
+                                                                 int valueFilterNumber) throws ProcessorException, IOException {
+                TsFileDynamicOneColumnData data = new TsFileDynamicOneColumnData(TSDataType.INT32, true);
                 //data.putTime(10L);
                 //data.putInt(6);
                 return data;

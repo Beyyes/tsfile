@@ -5,7 +5,7 @@ import cn.edu.tsinghua.tsfile.common.conf.TSFileDescriptor;
 import cn.edu.tsinghua.tsfile.common.utils.ITsRandomAccessFileWriter;
 import cn.edu.tsinghua.tsfile.common.utils.Pair;
 import cn.edu.tsinghua.tsfile.file.metadata.enums.CompressionTypeName;
-import cn.edu.tsinghua.tsfile.timeseries.read.query.DynamicOneColumnData;
+import cn.edu.tsinghua.tsfile.timeseries.read.support.TsFileDynamicOneColumnData;
 import cn.edu.tsinghua.tsfile.timeseries.write.desc.MeasurementDescriptor;
 import cn.edu.tsinghua.tsfile.timeseries.write.exception.NoMeasurementException;
 import cn.edu.tsinghua.tsfile.timeseries.write.exception.WriteProcessException;
@@ -177,7 +177,7 @@ public class TsFileWriter {
    */
   public List<Object> getDataInMemory(String deltaObjectId, String measurementId) {
     if (groupWriters.get(deltaObjectId) == null) {
-      DynamicOneColumnData left = null;
+      TsFileDynamicOneColumnData left = null;
       Pair<List<ByteArrayInputStream>, CompressionTypeName> right = null;
       List<Object> result = new ArrayList<>();
       result.add(left);

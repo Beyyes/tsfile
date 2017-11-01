@@ -8,7 +8,7 @@ import cn.edu.tsinghua.tsfile.timeseries.filter.definition.filterseries.FilterSe
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.And;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.LtEq;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.NotEq;
-import cn.edu.tsinghua.tsfile.timeseries.filter.visitorImpl.OverflowTimeFilter;
+import cn.edu.tsinghua.tsfile.timeseries.filter.visitor.impl.OverflowTimeFilter;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.GtEq;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.Not;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.Or;

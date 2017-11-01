@@ -11,8 +11,10 @@ import cn.edu.tsinghua.tsfile.timeseries.filter.utils.FilterUtils;
 import cn.edu.tsinghua.tsfile.timeseries.read.TsRandomAccessLocalFileReader;
 import cn.edu.tsinghua.tsfile.timeseries.read.RecordReader;
 import cn.edu.tsinghua.tsfile.timeseries.read.RowGroupReader;
-import cn.edu.tsinghua.tsfile.timeseries.read.management.SeriesSchema;
-import cn.edu.tsinghua.tsfile.timeseries.read.qp.Path;
+import cn.edu.tsinghua.tsfile.timeseries.read.support.TsFileDynamicOneColumnData;
+import cn.edu.tsinghua.tsfile.timeseries.read.support.TsFileQueryDataSet;
+import cn.edu.tsinghua.tsfile.timeseries.read.support.SeriesSchema;
+import cn.edu.tsinghua.tsfile.timeseries.read.support.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,15 +37,15 @@ public class QueryEngine {
         FETCH_SIZE = fetchSize;
     }
 
-    public static QueryDataSet query(QueryConfig config, String fileName) throws IOException {
+    public static TsFileQueryDataSet query(QueryConfig config, String fileName) throws IOException {
         TsRandomAccessLocalFileReader raf = new TsRandomAccessLocalFileReader(fileName);
         QueryEngine queryEngine = new QueryEngine(raf);
-        QueryDataSet queryDataSet = queryEngine.query(config);
+        TsFileQueryDataSet queryDataSet = queryEngine.query(config);
         raf.close();
         return queryDataSet;
     }
 
-    public QueryDataSet query(QueryConfig config) throws IOException {
+    public TsFileQueryDataSet query(QueryConfig config) throws IOException {
         if (config.getQueryType() == QueryType.QUERY_WITHOUT_FILTER) {
             return queryWithoutFilter(config);
         } else if (config.getQueryType() == QueryType.SELECT_ONE_COL_WITH_FILTER) {
@@ -55,7 +57,7 @@ public class QueryEngine {
     }
 
     /**
-     * One of the basic query methods, return <code>QueryDataSet</code> which contains
+     * One of the basic query methods, return <code>TsFileQueryDataSet</code> which contains
      * the query result.
      * <p>
      *
@@ -66,8 +68,8 @@ public class QueryEngine {
      * @return query result
      * @throws IOException TsFile read error
      */
-    public QueryDataSet query(List<Path> paths, FilterExpression timeFilter, FilterExpression freqFilter,
-                              FilterExpression valueFilter) throws IOException {
+    public TsFileQueryDataSet query(List<Path> paths, FilterExpression timeFilter, FilterExpression freqFilter,
+                                    FilterExpression valueFilter) throws IOException {
 
         if (timeFilter == null && freqFilter == null && valueFilter == null) {
             return queryWithoutFilter(paths);
@@ -81,7 +83,7 @@ public class QueryEngine {
         return null;
     }
 
-    public QueryDataSet query(QueryConfig config, Map<String, Long> params) throws IOException {
+    public TsFileQueryDataSet query(QueryConfig config, Map<String, Long> params) throws IOException {
         List<Path> paths = getPathsFromSelectedPaths(config.getSelectColumns());
 
         SingleSeriesFilterExpression timeFilter = FilterUtils.construct(config.getTimeFilter(), null);
@@ -95,8 +97,8 @@ public class QueryEngine {
         return query(paths, timeFilter, freqFilter, valueFilter, params);
     }
 
-    public QueryDataSet query(List<Path> paths, FilterExpression timeFilter, FilterExpression freqFilter,
-                              FilterExpression valueFilter, Map<String, Long> params) throws IOException {
+    public TsFileQueryDataSet query(List<Path> paths, FilterExpression timeFilter, FilterExpression freqFilter,
+                                    FilterExpression valueFilter, Map<String, Long> params) throws IOException {
 
         long startOffset = params.get(QueryConstant.PARTITION_START_OFFSET);
         long endOffset = params.get(QueryConstant.PARTITION_END_OFFSET);
@@ -109,7 +111,7 @@ public class QueryEngine {
         return queryWithSpecificRowGroups(paths, timeFilter, freqFilter, valueFilter, idxs);
     }
 
-    private QueryDataSet queryWithSpecificRowGroups(List<Path> paths, FilterExpression timeFilter, FilterExpression freqFilter
+    private TsFileQueryDataSet queryWithSpecificRowGroups(List<Path> paths, FilterExpression timeFilter, FilterExpression freqFilter
             , FilterExpression valueFilter, ArrayList<Integer> rowGroupIndexList) throws IOException {
         if (timeFilter == null && freqFilter == null && valueFilter == null) {
             return queryWithoutFilter(paths, rowGroupIndexList);
@@ -123,30 +125,30 @@ public class QueryEngine {
         throw new IOException("Query Not Support Exception");
     }
 
-    private QueryDataSet queryWithoutFilter(QueryConfig config) throws IOException {
+    private TsFileQueryDataSet queryWithoutFilter(QueryConfig config) throws IOException {
         List<Path> paths = getPathsFromSelectedPaths(config.getSelectColumns());
         return queryWithoutFilter(paths);
     }
 
-    private QueryDataSet queryWithoutFilter(List<Path> paths) throws IOException {
-        return new IteratorQueryDataSet(paths) {
+    private TsFileQueryDataSet queryWithoutFilter(List<Path> paths) throws IOException {
+        return new IteratorTsFileQueryDataSet(paths) {
             @Override
-            public DynamicOneColumnData getMoreRecordsForOneColumn(Path p, DynamicOneColumnData res) throws IOException {
+            public TsFileDynamicOneColumnData getMoreRecordsForOneColumn(Path p, TsFileDynamicOneColumnData res) throws IOException {
                 return recordReader.getValueInOneColumn(res, FETCH_SIZE, p.getDeltaObjectToString(), p.getMeasurementToString());
             }
         };
     }
 
-    private QueryDataSet queryWithoutFilter(List<Path> paths, ArrayList<Integer> RowGroupIdxList) throws IOException {
-        return new IteratorQueryDataSet(paths) {
+    private TsFileQueryDataSet queryWithoutFilter(List<Path> paths, ArrayList<Integer> RowGroupIdxList) throws IOException {
+        return new IteratorTsFileQueryDataSet(paths) {
             @Override
-            public DynamicOneColumnData getMoreRecordsForOneColumn(Path p, DynamicOneColumnData res) throws IOException {
+            public TsFileDynamicOneColumnData getMoreRecordsForOneColumn(Path p, TsFileDynamicOneColumnData res) throws IOException {
                 return recordReader.getValueInOneColumn(res, FETCH_SIZE, p.getDeltaObjectToString(), p.getMeasurementToString(), RowGroupIdxList);
             }
         };
     }
 
-    private QueryDataSet readOneColumnValueUseFilter(QueryConfig config) throws IOException {
+    private TsFileQueryDataSet readOneColumnValueUseFilter(QueryConfig config) throws IOException {
         SingleSeriesFilterExpression timeFilter = FilterUtils.construct(config.getTimeFilter(), null);
         SingleSeriesFilterExpression freqFilter = FilterUtils.construct(config.getFreqFilter(), null);
         SingleSeriesFilterExpression valueFilter = FilterUtils.construct(config.getValueFilter(), recordReader);
@@ -154,32 +156,32 @@ public class QueryEngine {
         return readOneColumnValueUseFilter(paths, timeFilter, freqFilter, valueFilter);
     }
 
-    private QueryDataSet readOneColumnValueUseFilter(List<Path> paths, SingleSeriesFilterExpression timeFilter,
-                                                     SingleSeriesFilterExpression freqFilter, SingleSeriesFilterExpression valueFilter) throws IOException {
+    private TsFileQueryDataSet readOneColumnValueUseFilter(List<Path> paths, SingleSeriesFilterExpression timeFilter,
+                                                           SingleSeriesFilterExpression freqFilter, SingleSeriesFilterExpression valueFilter) throws IOException {
         logger.debug("start read one column data with filter...");
-        return new IteratorQueryDataSet(paths) {
+        return new IteratorTsFileQueryDataSet(paths) {
             @Override
-            public DynamicOneColumnData getMoreRecordsForOneColumn(Path p, DynamicOneColumnData res) throws IOException {
+            public TsFileDynamicOneColumnData getMoreRecordsForOneColumn(Path p, TsFileDynamicOneColumnData res) throws IOException {
                 return recordReader.getValuesUseFilter(res, FETCH_SIZE, p.getDeltaObjectToString(), p.getMeasurementToString()
                         , timeFilter, freqFilter, valueFilter);
             }
         };
     }
 
-    private QueryDataSet readOneColumnValueUseFilter(List<Path> paths, SingleSeriesFilterExpression timeFilter,
-                                                    SingleSeriesFilterExpression freqFilter, SingleSeriesFilterExpression valueFilter, ArrayList<Integer> rowGroupIndexList) throws IOException {
+    private TsFileQueryDataSet readOneColumnValueUseFilter(List<Path> paths, SingleSeriesFilterExpression timeFilter,
+                                                           SingleSeriesFilterExpression freqFilter, SingleSeriesFilterExpression valueFilter, ArrayList<Integer> rowGroupIndexList) throws IOException {
         logger.debug("start read one column data with filter according to specific RowGroup Index List {}", rowGroupIndexList);
 
-        return new IteratorQueryDataSet(paths) {
+        return new IteratorTsFileQueryDataSet(paths) {
             @Override
-            public DynamicOneColumnData getMoreRecordsForOneColumn(Path p, DynamicOneColumnData res) throws IOException {
+            public TsFileDynamicOneColumnData getMoreRecordsForOneColumn(Path p, TsFileDynamicOneColumnData res) throws IOException {
                 return recordReader.getValuesUseFilter(res, FETCH_SIZE, p.getDeltaObjectToString(), p.getMeasurementToString()
                         , timeFilter, freqFilter, valueFilter, rowGroupIndexList);
             }
         };
     }
 
-    private QueryDataSet crossColumnQuery(QueryConfig config) throws IOException {
+    private TsFileQueryDataSet crossColumnQuery(QueryConfig config) throws IOException {
         logger.info("start cross columns getIndex...");
         SingleSeriesFilterExpression timeFilter = FilterUtils.construct(config.getTimeFilter(), null);
         SingleSeriesFilterExpression freqFilter = FilterUtils.construct(config.getFreqFilter(), null);
@@ -189,18 +191,18 @@ public class QueryEngine {
         return crossColumnQuery(paths, timeFilter, freqFilter, valueFilter);
     }
 
-    private QueryDataSet crossColumnQuery(List<Path> paths, SingleSeriesFilterExpression timeFilter, SingleSeriesFilterExpression freqFilter,
-                                          CrossSeriesFilterExpression valueFilter) throws IOException {
+    private TsFileQueryDataSet crossColumnQuery(List<Path> paths, SingleSeriesFilterExpression timeFilter, SingleSeriesFilterExpression freqFilter,
+                                                CrossSeriesFilterExpression valueFilter) throws IOException {
 
         CrossQueryTimeGenerator timeGenerator = new CrossQueryTimeGenerator(timeFilter, freqFilter, valueFilter, FETCH_SIZE) {
             @Override
-            public DynamicOneColumnData getDataInNextBatch(DynamicOneColumnData res, int fetchSize,
-                                                           SingleSeriesFilterExpression valueFilter, int valueFilterNumber) throws ProcessorException, IOException {
+            public TsFileDynamicOneColumnData getDataInNextBatch(TsFileDynamicOneColumnData res, int fetchSize,
+                                                                 SingleSeriesFilterExpression valueFilter, int valueFilterNumber) throws ProcessorException, IOException {
                 return recordReader.getValuesUseFilter(res, fetchSize, valueFilter);
             }
         };
 
-        return new CrossQueryIteratorDataSet(timeGenerator) {
+        return new CrossTsFileQueryIteratorDataSet(timeGenerator) {
             @Override
             public boolean getMoreRecords() throws IOException {
                 try {
@@ -211,7 +213,7 @@ public class QueryEngine {
                     for (Path p : paths) {
                         String deltaObjectUID = p.getDeltaObjectToString();
                         String measurementUID = p.getMeasurementToString();
-                        DynamicOneColumnData oneColDataList = recordReader.getValuesUseTimestamps(deltaObjectUID, measurementUID, timeRet);
+                        TsFileDynamicOneColumnData oneColDataList = recordReader.getValuesUseTimestamps(deltaObjectUID, measurementUID, timeRet);
                         mapRet.put(p.getFullPath(), oneColDataList);
                     }
 
@@ -223,17 +225,17 @@ public class QueryEngine {
         };
     }
 
-    private QueryDataSet crossColumnQuery(List<Path> paths, SingleSeriesFilterExpression timeFilter, SingleSeriesFilterExpression freqFilter,
-                                         CrossSeriesFilterExpression valueFilter, ArrayList<Integer> RowGroupIdxList) throws IOException {
+    private TsFileQueryDataSet crossColumnQuery(List<Path> paths, SingleSeriesFilterExpression timeFilter, SingleSeriesFilterExpression freqFilter,
+                                                CrossSeriesFilterExpression valueFilter, ArrayList<Integer> RowGroupIdxList) throws IOException {
         CrossQueryTimeGenerator timeQueryDataSet = new CrossQueryTimeGenerator(timeFilter, freqFilter, valueFilter, FETCH_SIZE) {
             @Override
-            public DynamicOneColumnData getDataInNextBatch(DynamicOneColumnData res, int fetchSize,
-                                                           SingleSeriesFilterExpression valueFilter, int valueFilterNumber) throws ProcessorException, IOException {
+            public TsFileDynamicOneColumnData getDataInNextBatch(TsFileDynamicOneColumnData res, int fetchSize,
+                                                                 SingleSeriesFilterExpression valueFilter, int valueFilterNumber) throws ProcessorException, IOException {
                 return recordReader.getValuesUseFilter(res, fetchSize, valueFilter, RowGroupIdxList);
             }
         };
 
-        return new CrossQueryIteratorDataSet(timeQueryDataSet) {
+        return new CrossTsFileQueryIteratorDataSet(timeQueryDataSet) {
             @Override
             public boolean getMoreRecords() throws IOException {
                 try {
@@ -244,7 +246,7 @@ public class QueryEngine {
                     for (Path p : paths) {
                         String deltaObjectUID = p.getDeltaObjectToString();
                         String measurementUID = p.getMeasurementToString();
-                        DynamicOneColumnData oneColDataList = recordReader.getValuesUseTimestamps(deltaObjectUID, measurementUID, timeRet, RowGroupIdxList);
+                        TsFileDynamicOneColumnData oneColDataList = recordReader.getValuesUseTimestamps(deltaObjectUID, measurementUID, timeRet, RowGroupIdxList);
                         mapRet.put(p.getFullPath(), oneColDataList);
                     }
 

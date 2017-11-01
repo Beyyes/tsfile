@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import cn.edu.tsinghua.tsfile.timeseries.read.support.TsFileDynamicOneColumnData;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.After;
@@ -20,7 +21,6 @@ import cn.edu.tsinghua.tsfile.common.constant.JsonFormatConstant;
 import cn.edu.tsinghua.tsfile.common.utils.Pair;
 import cn.edu.tsinghua.tsfile.file.metadata.enums.CompressionTypeName;
 import cn.edu.tsinghua.tsfile.file.metadata.enums.TSDataType;
-import cn.edu.tsinghua.tsfile.timeseries.read.query.DynamicOneColumnData;
 import cn.edu.tsinghua.tsfile.timeseries.utils.RecordUtils;
 import cn.edu.tsinghua.tsfile.timeseries.write.exception.WriteProcessException;
 import cn.edu.tsinghua.tsfile.timeseries.write.record.TSRecord;
@@ -80,13 +80,13 @@ public class ReadPageInMemTest {
 			}
 		}
 		List<Object> result = innerWriter.getDataInMemory("root.car.d1", "s1");
-		DynamicOneColumnData left = (DynamicOneColumnData) result.get(0);
+		TsFileDynamicOneColumnData left = (TsFileDynamicOneColumnData) result.get(0);
 		Pair<List<ByteArrayInputStream>, CompressionTypeName> right = (Pair<List<ByteArrayInputStream>, CompressionTypeName>) result
 				.get(1);
 		assertEquals(0, right.left.size());
 		assertEquals(3, left.valueLength);
 		for (int i = 1; i <= 3; i++) {
-			DynamicOneColumnData columnData = (DynamicOneColumnData) innerWriter.getDataInMemory("root.car.d1", "s1").get(0);
+			TsFileDynamicOneColumnData columnData = (TsFileDynamicOneColumnData) innerWriter.getDataInMemory("root.car.d1", "s1").get(0);
 			assertEquals(i, columnData.getTime(i - 1));
 			assertEquals(1, columnData.getInt(i - 1));
 		}
@@ -102,10 +102,10 @@ public class ReadPageInMemTest {
 		}
 
 		result = innerWriter.getDataInMemory("root.car.d1", "s1");
-		left = (DynamicOneColumnData) result.get(0);
+		left = (TsFileDynamicOneColumnData) result.get(0);
 		right = (Pair<List<ByteArrayInputStream>, CompressionTypeName>) result.get(1);
 
-		DynamicOneColumnData left2 = (DynamicOneColumnData) innerWriter.getDataInMemory("root.car.d1", "s3").get(0);
+		TsFileDynamicOneColumnData left2 = (TsFileDynamicOneColumnData) innerWriter.getDataInMemory("root.car.d1", "s3").get(0);
 		Pair<List<ByteArrayInputStream>, CompressionTypeName> right2 = (Pair<List<ByteArrayInputStream>, CompressionTypeName>) innerWriter
 				.getDataInMemory("root.car.d1", "s3").get(1);
 		assertEquals(right.left.size(), right2.left.size());
@@ -151,12 +151,12 @@ public class ReadPageInMemTest {
 			}
 		}
 		for (int i = 1; i <= 3; i++) {
-			DynamicOneColumnData columnData = (DynamicOneColumnData) innerWriter.getDataInMemory("root.car.d1", "s1").get(0);
+			TsFileDynamicOneColumnData columnData = (TsFileDynamicOneColumnData) innerWriter.getDataInMemory("root.car.d1", "s1").get(0);
 			assertEquals(i, columnData.getTime(i - 1));
 			assertEquals(1, columnData.getInt(i - 1));
 		}
 		for (int i = 1; i <= 3; i++) {
-			DynamicOneColumnData columnData = (DynamicOneColumnData) innerWriter.getDataInMemory("root.car.d2", "s1").get(0);
+			TsFileDynamicOneColumnData columnData = (TsFileDynamicOneColumnData) innerWriter.getDataInMemory("root.car.d2", "s1").get(0);
 			assertEquals(i, columnData.getTime(i - 1));
 			assertEquals(1, columnData.getInt(i - 1));
 		}
@@ -182,8 +182,8 @@ public class ReadPageInMemTest {
 				fail(e.getMessage());
 			}
 		}
-		DynamicOneColumnData left = (DynamicOneColumnData) innerWriter.getDataInMemory("root.car.d1", "s1").get(0);
-		DynamicOneColumnData left2 = (DynamicOneColumnData) innerWriter.getDataInMemory("root.car.d2", "s1").get(0);
+		TsFileDynamicOneColumnData left = (TsFileDynamicOneColumnData) innerWriter.getDataInMemory("root.car.d1", "s1").get(0);
+		TsFileDynamicOneColumnData left2 = (TsFileDynamicOneColumnData) innerWriter.getDataInMemory("root.car.d2", "s1").get(0);
 		Pair<List<ByteArrayInputStream>, CompressionTypeName> right = (Pair<List<ByteArrayInputStream>, CompressionTypeName>) innerWriter
 				.getDataInMemory("root.car.d1", "s1").get(1);
 		Pair<List<ByteArrayInputStream>, CompressionTypeName> right2 = (Pair<List<ByteArrayInputStream>, CompressionTypeName>) innerWriter
@@ -195,16 +195,16 @@ public class ReadPageInMemTest {
 		right2 = (Pair<List<ByteArrayInputStream>, CompressionTypeName>) innerWriter.getDataInMemory("root.car.d2", "s2").get(1);
 		assertEquals(right.left.size(), right2.left.size());
 
-		left = (DynamicOneColumnData) innerWriter.getDataInMemory("root.car.d1", "s2").get(0);
-		left2 = (DynamicOneColumnData) innerWriter.getDataInMemory("root.car.d2", "s2").get(0);
+		left = (TsFileDynamicOneColumnData) innerWriter.getDataInMemory("root.car.d1", "s2").get(0);
+		left2 = (TsFileDynamicOneColumnData) innerWriter.getDataInMemory("root.car.d2", "s2").get(0);
 		assertEquals(left.valueLength, left2.valueLength);
 
 		right = (Pair<List<ByteArrayInputStream>, CompressionTypeName>) innerWriter.getDataInMemory("root.car.d1", "s3").get(1);
 		right2 = (Pair<List<ByteArrayInputStream>, CompressionTypeName>) innerWriter.getDataInMemory("root.car.d2", "s3").get(1);
 		assertEquals(right.left.size(), right2.left.size());
 
-		left = (DynamicOneColumnData) innerWriter.getDataInMemory("root.car.d1", "s3").get(0);
-		left2 = (DynamicOneColumnData) innerWriter.getDataInMemory("root.car.d2", "s3").get(0);
+		left = (TsFileDynamicOneColumnData) innerWriter.getDataInMemory("root.car.d1", "s3").get(0);
+		left2 = (TsFileDynamicOneColumnData) innerWriter.getDataInMemory("root.car.d2", "s3").get(0);
 		assertEquals(left.valueLength, left2.valueLength);
 
 		right = (Pair<List<ByteArrayInputStream>, CompressionTypeName>) innerWriter.getDataInMemory("root.car.d1", "s4").get(1);
@@ -212,8 +212,8 @@ public class ReadPageInMemTest {
 
 		assertEquals(right.left.size(), right2.left.size());
 
-		left = (DynamicOneColumnData) innerWriter.getDataInMemory("root.car.d1", "s4").get(0);
-		left2 = (DynamicOneColumnData) innerWriter.getDataInMemory("root.car.d2", "s4").get(0);
+		left = (TsFileDynamicOneColumnData) innerWriter.getDataInMemory("root.car.d1", "s4").get(0);
+		left2 = (TsFileDynamicOneColumnData) innerWriter.getDataInMemory("root.car.d2", "s4").get(0);
 
 		assertEquals(left.valueLength, left2.valueLength);
 

@@ -1,4 +1,4 @@
-package cn.edu.tsinghua.tsfile.timeseries.read.management;
+package cn.edu.tsinghua.tsfile.timeseries.read.support;
 
 import cn.edu.tsinghua.tsfile.file.metadata.enums.TSDataType;
 import cn.edu.tsinghua.tsfile.file.metadata.enums.TSEncoding;

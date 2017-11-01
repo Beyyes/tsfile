@@ -5,7 +5,8 @@ import cn.edu.tsinghua.tsfile.timeseries.filter.definition.FilterExpression;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.SingleSeriesFilterExpression;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.CSAnd;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.CSOr;
-import cn.edu.tsinghua.tsfile.timeseries.filter.visitorImpl.SingleValueVisitor;
+import cn.edu.tsinghua.tsfile.timeseries.filter.visitor.impl.SingleValueVisitor;
+import cn.edu.tsinghua.tsfile.timeseries.read.support.TsFileDynamicOneColumnData;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import java.util.Arrays;
  */
 public abstract class CrossQueryTimeGenerator {
 
-    public ArrayList<DynamicOneColumnData> retMap; // represent the single valueFilter and its' data
+    public ArrayList<TsFileDynamicOneColumnData> retMap; // represent the single valueFilter and its' data
     public ArrayList<Boolean> hasReadAllList; // represent whether the data has been read all
     protected ArrayList<Long> lastValueList; // represent the value stored in CSOr relation
     protected ArrayList<Integer> idxCount; // represent the dfsCnt and the sum node number of its' subtree
@@ -111,7 +112,7 @@ public abstract class CrossQueryTimeGenerator {
             return v;
         }
         if (valueFilter instanceof SingleSeriesFilterExpression) {
-            DynamicOneColumnData res = retMap.get(dfsCnt);
+            TsFileDynamicOneColumnData res = retMap.get(dfsCnt);
 
             // res is null or res has no data.
             if ((res == null) || (res.curIdx == res.valueLength && !hasReadAllList.get(dfsCnt))) {
@@ -175,9 +176,9 @@ public abstract class CrossQueryTimeGenerator {
         return -1;
     }
 
-    public DynamicOneColumnData getMoreRecordForOneCol(int idx, SingleSeriesFilterExpression valueFilter)
+    public TsFileDynamicOneColumnData getMoreRecordForOneCol(int idx, SingleSeriesFilterExpression valueFilter)
             throws ProcessorException, IOException {
-        DynamicOneColumnData res = retMap.get(idx);
+        TsFileDynamicOneColumnData res = retMap.get(idx);
         if (res != null) {
             // rowGroupIdx will not change
             res.clearData();
@@ -209,7 +210,7 @@ public abstract class CrossQueryTimeGenerator {
      * @throws ProcessorException exception in query process
      * @throws IOException exception in IO
      */
-    public abstract DynamicOneColumnData getDataInNextBatch(DynamicOneColumnData res, int fetchSize,
-                                                            SingleSeriesFilterExpression valueFilter, int valueFilterNumber)
+    public abstract TsFileDynamicOneColumnData getDataInNextBatch(TsFileDynamicOneColumnData res, int fetchSize,
+                                                                  SingleSeriesFilterExpression valueFilter, int valueFilterNumber)
             throws ProcessorException, IOException;
 }

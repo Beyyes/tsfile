@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.FilterFactory;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.LtEq;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.NotEq;
-import cn.edu.tsinghua.tsfile.timeseries.filter.visitorImpl.SingleValueVisitor;
+import cn.edu.tsinghua.tsfile.timeseries.filter.visitor.impl.SingleValueVisitor;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.GtEq;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.Not;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.Or;

@@ -1,4 +1,4 @@
-package cn.edu.tsinghua.tsfile.timeseries.filter.visitorImpl;
+package cn.edu.tsinghua.tsfile.timeseries.filter.visitor.impl;
 
 import cn.edu.tsinghua.tsfile.common.exception.FilterDataTypeException;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.SingleSeriesFilterExpression;

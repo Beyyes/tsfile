@@ -5,7 +5,7 @@ import cn.edu.tsinghua.tsfile.file.metadata.RowGroupMetaData;
 import cn.edu.tsinghua.tsfile.file.metadata.TimeSeriesChunkMetaData;
 import cn.edu.tsinghua.tsfile.file.metadata.enums.TSDataType;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.SingleSeriesFilterExpression;
-import cn.edu.tsinghua.tsfile.timeseries.read.query.DynamicOneColumnData;
+import cn.edu.tsinghua.tsfile.timeseries.read.support.TsFileDynamicOneColumnData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,20 +77,20 @@ public class RowGroupReader {
      *
      * @param measurementId measurement's id
      * @param timeRet       Array of the time.
-     * @return DynamicOneColumnData
+     * @return TsFileDynamicOneColumnData
      * @throws IOException exception in IO
      */
-    public DynamicOneColumnData readValueUseTimeValue(String measurementId, long[] timeRet) throws IOException {
+    public TsFileDynamicOneColumnData readValueUseTimeValue(String measurementId, long[] timeRet) throws IOException {
         return valueReaders.get(measurementId).getValuesForGivenValues(timeRet);
     }
 
-    public DynamicOneColumnData readOneColumnUseFilter(String sid, DynamicOneColumnData res, int fetchSize
+    public TsFileDynamicOneColumnData readOneColumnUseFilter(String sid, TsFileDynamicOneColumnData res, int fetchSize
             , SingleSeriesFilterExpression timeFilter, SingleSeriesFilterExpression freqFilter, SingleSeriesFilterExpression valueFilter) throws IOException {
         ValueReader valueReader = valueReaders.get(sid);
         return valueReader.readOneColumnUseFilter(res, fetchSize, timeFilter, freqFilter, valueFilter);
     }
 
-    public DynamicOneColumnData readOneColumn(String sid, DynamicOneColumnData res, int fetchSize) throws IOException {
+    public TsFileDynamicOneColumnData readOneColumn(String sid, TsFileDynamicOneColumnData res, int fetchSize) throws IOException {
         ValueReader valueReader = valueReaders.get(sid);
         return valueReader.readOneColumn(res, fetchSize);
     }

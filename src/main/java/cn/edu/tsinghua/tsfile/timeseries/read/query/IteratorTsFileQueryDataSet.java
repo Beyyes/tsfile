@@ -1,8 +1,6 @@
 package cn.edu.tsinghua.tsfile.timeseries.read.query;
 
-import cn.edu.tsinghua.tsfile.timeseries.read.qp.Path;
-import cn.edu.tsinghua.tsfile.timeseries.read.support.Field;
-import cn.edu.tsinghua.tsfile.timeseries.read.support.RowRecord;
+import cn.edu.tsinghua.tsfile.timeseries.read.support.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,17 +10,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.PriorityQueue;
 
-public abstract class IteratorQueryDataSet extends QueryDataSet {
-    private static final Logger logger = LoggerFactory.getLogger(IteratorQueryDataSet.class);
-    public LinkedHashMap<Path, DynamicOneColumnData> retMap;
+public abstract class IteratorTsFileQueryDataSet extends TsFileQueryDataSet {
+    private static final Logger logger = LoggerFactory.getLogger(IteratorTsFileQueryDataSet.class);
+    public LinkedHashMap<Path, TsFileDynamicOneColumnData> retMap;
     private LinkedHashMap<Path, Boolean> hasMoreRet;
 
-    public IteratorQueryDataSet(List<Path> paths) throws IOException {
+    public IteratorTsFileQueryDataSet(List<Path> paths) throws IOException {
         hasMoreRet = new LinkedHashMap<>();
         retMap = new LinkedHashMap<>();
         timeMap = new HashMap<>();
         for (Path p : paths) {
-            DynamicOneColumnData res = getMoreRecordsForOneColumn(p, null);
+            TsFileDynamicOneColumnData res = getMoreRecordsForOneColumn(p, null);
 
             retMap.put(p, res);
             if (res == null || res.valueLength == 0) {
@@ -33,14 +31,14 @@ public abstract class IteratorQueryDataSet extends QueryDataSet {
         }
     }
 
-    public abstract DynamicOneColumnData getMoreRecordsForOneColumn(Path colName
-            , DynamicOneColumnData res) throws IOException;
+    public abstract TsFileDynamicOneColumnData getMoreRecordsForOneColumn(Path colName
+            , TsFileDynamicOneColumnData res) throws IOException;
 
     public void initForRecord() {
         heap = new PriorityQueue<>(retMap.size());
 
         for (Path p : retMap.keySet()) {
-            DynamicOneColumnData res = retMap.get(p);
+            TsFileDynamicOneColumnData res = retMap.get(p);
             if (res != null && res.curIdx < res.valueLength) {
                 heapPut(res.getTime(res.curIdx));
             }
@@ -72,7 +70,7 @@ public abstract class IteratorQueryDataSet extends QueryDataSet {
         RowRecord r = new RowRecord(minTime, null, null);
         for (Path p : retMap.keySet()) {
             Field f;
-            DynamicOneColumnData res = retMap.get(p);
+            TsFileDynamicOneColumnData res = retMap.get(p);
             if (res.curIdx < res.valueLength && minTime == res.getTime(res.curIdx)) {
                 f = new Field(res.dataType, p.getDeltaObjectToString(), p.getMeasurementToString());
                 f.setNull(false);

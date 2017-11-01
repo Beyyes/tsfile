@@ -10,7 +10,7 @@ import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.And;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.LtEq;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.NotEq;
 import cn.edu.tsinghua.tsfile.timeseries.filter.utils.FloatInterval;
-import cn.edu.tsinghua.tsfile.timeseries.filter.visitorImpl.SingleValueVisitor;
+import cn.edu.tsinghua.tsfile.timeseries.filter.visitor.impl.SingleValueVisitor;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.GtEq;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.Or;
 import cn.edu.tsinghua.tsfile.timeseries.filter.verifier.FloatFilterVerifier;

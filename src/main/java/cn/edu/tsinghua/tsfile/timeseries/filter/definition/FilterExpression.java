@@ -1,7 +1,7 @@
 package cn.edu.tsinghua.tsfile.timeseries.filter.definition;
 
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.filterseries.FilterSeries;
-import cn.edu.tsinghua.tsfile.timeseries.filter.visitorImpl.FilterVisitor;
+import cn.edu.tsinghua.tsfile.timeseries.filter.visitor.impl.FilterVisitor;
 
 /**
  * FilterExpression is a top level filter abstraction.

@@ -2,7 +2,7 @@ package cn.edu.tsinghua.tsfile.timeseries.write.series;
 
 import cn.edu.tsinghua.tsfile.common.utils.Pair;
 import cn.edu.tsinghua.tsfile.file.metadata.enums.CompressionTypeName;
-import cn.edu.tsinghua.tsfile.timeseries.read.query.DynamicOneColumnData;
+import cn.edu.tsinghua.tsfile.timeseries.read.support.TsFileDynamicOneColumnData;
 import cn.edu.tsinghua.tsfile.timeseries.write.desc.MeasurementDescriptor;
 import cn.edu.tsinghua.tsfile.timeseries.write.exception.NoMeasurementException;
 import cn.edu.tsinghua.tsfile.timeseries.write.exception.WriteProcessException;
@@ -59,7 +59,7 @@ public class RowGroupWriterImpl implements IRowGroupWriter {
     public List<Object> getDataInMemory(String measurementId) {
         if (dataSeriesWriters.get(measurementId) == null) {
             LOG.warn("The measurementId {} is not exist", measurementId);
-            DynamicOneColumnData left = null;
+            TsFileDynamicOneColumnData left = null;
             Pair<List<ByteArrayInputStream>, CompressionTypeName> right = null;
             List<Object> result = new ArrayList<>();
             result.add(left);

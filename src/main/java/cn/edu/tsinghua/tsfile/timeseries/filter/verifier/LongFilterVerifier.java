@@ -4,8 +4,8 @@ import cn.edu.tsinghua.tsfile.timeseries.filter.definition.FilterExpression;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.SingleSeriesFilterExpression;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators.*;
 import cn.edu.tsinghua.tsfile.timeseries.filter.utils.LongInterval;
-import cn.edu.tsinghua.tsfile.timeseries.filter.visitorImpl.ConvertExpressionVisitor;
-import cn.edu.tsinghua.tsfile.timeseries.filter.visitorImpl.FilterVisitor;
+import cn.edu.tsinghua.tsfile.timeseries.filter.visitor.impl.ConvertExpressionVisitor;
+import cn.edu.tsinghua.tsfile.timeseries.filter.visitor.impl.FilterVisitor;
 
 /**
  * @author CGF

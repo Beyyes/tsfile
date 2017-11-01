@@ -1,9 +1,8 @@
-package cn.edu.tsinghua.tsfile.timeseries.read.query;
+package cn.edu.tsinghua.tsfile.timeseries.read.support;
 
 import cn.edu.tsinghua.tsfile.common.exception.UnSupportedDataTypeException;
-import cn.edu.tsinghua.tsfile.timeseries.read.qp.Path;
-import cn.edu.tsinghua.tsfile.timeseries.read.support.Field;
-import cn.edu.tsinghua.tsfile.timeseries.read.support.RowRecord;
+import cn.edu.tsinghua.tsfile.timeseries.read.query.BatchReadRecordGenerator;
+import cn.edu.tsinghua.tsfile.timeseries.read.query.CrossQueryTimeGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,17 +12,17 @@ import java.util.Map;
 import java.util.PriorityQueue;
 
 
-public class QueryDataSet {
-    private static final Logger LOG = LoggerFactory.getLogger(QueryDataSet.class);
+public class TsFileQueryDataSet {
+    private static final Logger LOG = LoggerFactory.getLogger(TsFileQueryDataSet.class);
     private static final char PATH_SPLITTER = '.';
 
     // Time Generator for Cross Query when using batching read
     public CrossQueryTimeGenerator timeQueryDataSet;
-    public LinkedHashMap<String, DynamicOneColumnData> mapRet;
+    public LinkedHashMap<String, TsFileDynamicOneColumnData> mapRet;
     protected BatchReadRecordGenerator batchReaderRetGenerator;
 
     protected PriorityQueue<Long> heap; // special for save time values when processing cross getIndex
-    protected DynamicOneColumnData[] cols; // the content of cols equals to mapRet
+    protected TsFileDynamicOneColumnData[] cols; // the content of cols equals to mapRet
     protected int[] idxs; // idxs[i] stores the curIdx of cols[i]
     protected String[] deltaObjectIds;
     protected String[] measurementIds;
@@ -34,7 +33,7 @@ public class QueryDataSet {
     protected RowRecord currentRecord = null;
     private Map<String, Object> deltaMap; // this variable is used for TsFileDb
 
-    public QueryDataSet() {
+    public TsFileQueryDataSet() {
         mapRet = new LinkedHashMap<>();
     }
 
@@ -43,13 +42,13 @@ public class QueryDataSet {
 
         if (size > 0) {
             heap = new PriorityQueue<>(size);
-            cols = new DynamicOneColumnData[size];
+            cols = new TsFileDynamicOneColumnData[size];
             deltaObjectIds = new String[size];
             measurementIds = new String[size];
             idxs = new int[size];
             timeMap = new HashMap<>();
         } else {
-            LOG.error("QueryDataSet init row record occurs error! the size of ret is 0.");
+            LOG.error("TsFileQueryDataSet init row record occurs error! the size of ret is 0.");
             heap = new PriorityQueue<>();
         }
 
@@ -110,7 +109,6 @@ public class QueryDataSet {
             Field f = new Field(cols[i].dataType, deltaObjectIds[i], measurementIds[i]);
 
             if (idxs[i] < cols[i].valueLength && minTime == cols[i].getTime(idxs[i])) {
-                // f = new Field(cols[i].dataType, deltaObjectIds[i], measurementIds[i]);
                 f.setNull(false);
                 putValueToField(cols[i], idxs[i], f);
                 idxs[i]++;
@@ -118,7 +116,6 @@ public class QueryDataSet {
                     heapPut(cols[i].getTime(idxs[i]));
                 }
             } else {
-                // f = new Field(cols[i].dataType, measurementIds[i]);
                 f.setNull(true);
             }
             r.addField(f);
@@ -139,7 +136,7 @@ public class QueryDataSet {
         return currentRecord;
     }
 
-    public void putValueToField(DynamicOneColumnData col, int idx, Field f) {
+    public void putValueToField(TsFileDynamicOneColumnData col, int idx, Field f) {
         switch (col.dataType) {
             case BOOLEAN:
                 f.setBoolV(col.getBoolean(idx));
@@ -169,24 +166,8 @@ public class QueryDataSet {
 
     public void clear() {
         this.ifInit = false;
-        for (DynamicOneColumnData col : mapRet.values()) {
+        for (TsFileDynamicOneColumnData col : mapRet.values()) {
             col.clearData();
         }
-    }
-
-    public BatchReadRecordGenerator getBatchReaderRetGenerator() {
-        return batchReaderRetGenerator;
-    }
-
-    public void setBatchReaderRetGenerator(BatchReadRecordGenerator batchReaderRetGenerator) {
-        this.batchReaderRetGenerator = batchReaderRetGenerator;
-    }
-
-    public Map<String, Object> getDeltaMap() {
-        return this.deltaMap;
-    }
-
-    public void setDeltaMap(Map<String, Object> deltaMap) {
-        this.deltaMap = deltaMap;
     }
 }

@@ -1,6 +1,7 @@
 package cn.edu.tsinghua.tsfile.timeseries.read.query;
 
 import cn.edu.tsinghua.tsfile.timeseries.read.support.Field;
+import cn.edu.tsinghua.tsfile.timeseries.read.support.TsFileQueryDataSet;
 import cn.edu.tsinghua.tsfile.timeseries.read.support.RowRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,17 +10,17 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 
 /**
- * This class is the subclass of {@code QueryDataSet}. It is used to store
+ * This class is the subclass of {@code TsFileQueryDataSet}. It is used to store
  * and fetch more records for batch query in TsFile's SingleFileQuery.
  *
  * @author Jinrui Zhang
  */
-public abstract class CrossQueryIteratorDataSet extends QueryDataSet {
-    private static final Logger LOG = LoggerFactory.getLogger(CrossQueryIteratorDataSet.class);
+public abstract class CrossTsFileQueryIteratorDataSet extends TsFileQueryDataSet {
+    private static final Logger LOG = LoggerFactory.getLogger(CrossTsFileQueryIteratorDataSet.class);
     //special for save time values when processing cross getIndex
     private boolean hasReadAll;
 
-    public CrossQueryIteratorDataSet(CrossQueryTimeGenerator timeGenerator) throws IOException {
+    public CrossTsFileQueryIteratorDataSet(CrossQueryTimeGenerator timeGenerator) throws IOException {
         this.timeQueryDataSet = timeGenerator;
         mapRet = new LinkedHashMap<>();
         hasReadAll = getMoreRecords();
@@ -34,7 +35,7 @@ public abstract class CrossQueryIteratorDataSet extends QueryDataSet {
 
     public boolean hasNextRecord() {
         if (!ifInit) {
-            // hasReadAll is true represents that there is no records in this QueryDataSet
+            // hasReadAll is true represents that there is no records in this TsFileQueryDataSet
             if (hasReadAll) {
                 return false;
             }

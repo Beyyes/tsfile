@@ -2,7 +2,7 @@ package cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators;
 
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.SingleSeriesFilterExpression;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.filterseries.FilterSeries;
-import cn.edu.tsinghua.tsfile.timeseries.filter.visitorImpl.FilterVisitor;
+import cn.edu.tsinghua.tsfile.timeseries.filter.visitor.impl.FilterVisitor;
 
 import java.io.Serializable;
 

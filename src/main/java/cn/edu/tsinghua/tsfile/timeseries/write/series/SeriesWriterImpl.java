@@ -7,7 +7,7 @@ import cn.edu.tsinghua.tsfile.common.utils.Pair;
 import cn.edu.tsinghua.tsfile.file.metadata.enums.CompressionTypeName;
 import cn.edu.tsinghua.tsfile.file.metadata.enums.TSDataType;
 import cn.edu.tsinghua.tsfile.file.metadata.statistics.Statistics;
-import cn.edu.tsinghua.tsfile.timeseries.read.query.DynamicOneColumnData;
+import cn.edu.tsinghua.tsfile.timeseries.read.support.TsFileDynamicOneColumnData;
 import cn.edu.tsinghua.tsfile.timeseries.write.desc.MeasurementDescriptor;
 import cn.edu.tsinghua.tsfile.timeseries.write.exception.PageException;
 import cn.edu.tsinghua.tsfile.timeseries.write.io.TsFileIOWriter;
@@ -47,7 +47,7 @@ public class SeriesWriterImpl implements ISeriesWriter {
     /**
      * cache current page data
      */
-    private DynamicOneColumnData cacheCurrentPageData;
+    private TsFileDynamicOneColumnData cacheCurrentPageData;
     /**
      * value count on of a page. It will be reset after calling
      * {@code writePage()}
@@ -88,7 +88,7 @@ public class SeriesWriterImpl implements ISeriesWriter {
         // cache page data
         TSFileConfig config = TSFileDescriptor.getInstance().getConfig();
         if (config.duplicateIncompletedPage) {
-            this.cacheCurrentPageData = new DynamicOneColumnData(desc.getType(), true);
+            this.cacheCurrentPageData = new TsFileDynamicOneColumnData(desc.getType(), true);
         }
     }
 
@@ -201,8 +201,8 @@ public class SeriesWriterImpl implements ISeriesWriter {
     public List<Object> query() {
 
         Pair<List<ByteArrayInputStream>, CompressionTypeName> pagePairData = pageWriter.query();
-        DynamicOneColumnData ret;
-        ret = new DynamicOneColumnData(cacheCurrentPageData.dataType, true);
+        TsFileDynamicOneColumnData ret;
+        ret = new TsFileDynamicOneColumnData(cacheCurrentPageData.dataType, true);
 
         ret.mergeRecord(cacheCurrentPageData);
         List<Object> result = new ArrayList<>();

@@ -3,7 +3,7 @@ package cn.edu.tsinghua.tsfile.timeseries.filter.definition.operators;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.CrossSeriesFilterExpression;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.FilterExpression;
 import cn.edu.tsinghua.tsfile.timeseries.filter.definition.filterseries.FilterSeries;
-import cn.edu.tsinghua.tsfile.timeseries.filter.visitorImpl.FilterVisitor;
+import cn.edu.tsinghua.tsfile.timeseries.filter.visitor.impl.FilterVisitor;
 
 /**
  * Both the left and right operators of CSAnd must satisfy the condition
